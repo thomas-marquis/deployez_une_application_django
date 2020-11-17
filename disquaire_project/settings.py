@@ -12,6 +12,20 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+
+def get_env_param(param_name: str, envfile: str = 'database.env') -> str:
+    password = None
+    with open(envfile, 'r') as f:
+        for line in f.readlines():
+            key: str = line.split('=')[0]
+            if key == param_name:
+                password = '='.join(line.split('=')[1:])
+    if not password:
+        raise ValueError('Missing {} key in database.env file'.format(param_name))
+
+    return password
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_ROOT = os.path.dirname(os.path.abspath(__file__))
 BASE_DIR = os.path.dirname(BASE_ROOT)
@@ -84,21 +98,24 @@ WSGI_APPLICATION = 'disquaire_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql', # on utilise l'adaptateur postgresql
-    #     'NAME': 'disquaire', # le nom de notre base de données créée précédemment
-    #     'USER': 'celinems', # attention : remplacez par votre nom d'utilisateur !!
-    #     'PASSWORD': '',
-    #     'HOST': '',
-    #     'PORT': '5432',
-    # }
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+if os.environ.get('ENV') == 'PRODUCTION':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql_psycopg2',
+            'NAME': 'disquairedb',
+            'USER': 'discman',
+            'PASSWORD': 'Admin_13345!?',
+            'HOST': 'postgres',
+            'PORT': '5432',
+        }
     }
-}
-
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        }
+    }
 
 
 # Password validation
@@ -144,7 +161,6 @@ INTERNAL_IPS = ['127.0.0.1']
 
 
 if os.environ.get('ENV') == 'PRODUCTION':
-
     STATIC_ROOT = os.path.join(BASE_ROOT, 'staticfiles')
 
     # Simplified static file serving.

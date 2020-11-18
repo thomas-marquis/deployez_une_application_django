@@ -13,11 +13,10 @@ services:
       - disquaire-static-data:/app/disquaire_project/staticfiles
 
   postgres:
-    build:
-      context: .
-      dockerfile: Dockerfile_postgres
+    image: library/postgres:10.15
     restart: always
     volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - disquaire-pg-data:/var/lib/postgresql/data/
 
   nginx:

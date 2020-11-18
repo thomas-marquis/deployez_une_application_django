@@ -27,25 +27,22 @@ def get_env_param(param_name: str, envfile: str = 'database.env') -> str:
 
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_ROOT = os.path.dirname(os.path.abspath(__file__))
+BASE_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(BASE_ROOT)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = os.environ.get('SECRET_KEY', '4i&u(!%shd*0-3$ls)fohsjsd48t(gu%1-ch_wyzk7@#n3bd8e')
+SECRET_KEY = '4i&u(!%shd*0-3$ls)fohsjsd48t(gu%1-ch_wyzk7@#n3bd8e'
 # '-~aO;| F;rE[??/w^zcumh(9'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-if os.environ.get('ENV') == 'PRODUCTION':
-    DEBUG = False
-else:
-    DEBUG = True
+DEBUG = True
 
 
-ALLOWED_HOSTS = ['disquaire.herokuapp.com', 'localhost']
+ALLOWED_HOSTS = ['localhost']
 
 
 # Application definition
@@ -97,24 +94,12 @@ WSGI_APPLICATION = 'disquaire_project.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-if os.environ.get('ENV') == 'PRODUCTION':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'disquairedb',
-            'USER': 'discman',
-            'PASSWORD': 'Admin_13345!?',
-            'HOST': 'postgres',
-            'PORT': '5432',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    }
+}
 
 
 # Password validation
@@ -157,7 +142,3 @@ STATIC_URL = '/static/'
 
 # Django debug toolbar
 INTERNAL_IPS = ['127.0.0.1']
-
-
-if os.environ.get('ENV') == 'PRODUCTION':
-    STATIC_ROOT = os.path.join(BASE_ROOT, 'staticfiles')

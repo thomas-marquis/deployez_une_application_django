@@ -9,6 +9,8 @@ services:
       - 8000:8000
     depends_on:
       - postgres
+    volumes:
+      - disquaire-static-data:/app/disquaire_project/staticfiles
 
   postgres:
     build:
@@ -22,7 +24,7 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - ./:/home/disquaire
+      - disquaire-static-data:/home/disquaire/disquaire_project/staticfiles
     ports:
       - 80:80
       - 443:443
@@ -31,3 +33,4 @@ services:
 
 volumes:
   disquaire-pg-data:
+  disquaire-static-data:
